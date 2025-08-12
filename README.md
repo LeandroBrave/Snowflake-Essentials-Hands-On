@@ -53,9 +53,9 @@ O Script "01 - Basic Structures" contém os comandos que criam essa estrutura co
 
 ---
 
-## Etapa 2: Criação das Tabelas Brutas (Raw Tables)
+## Etapa 2: Criação das Tabelas
 
-### O que é uma tabela no Snowflake?
+### O que é uma tabela?
 
 Uma **tabela** é o objeto onde os dados são efetivamente armazenados. É organizada em colunas e linhas, e cada coluna tem um tipo de dado específico, como números, textos ou datas.
 
@@ -121,5 +121,31 @@ O Script "03 - Users and Roles" cria as roles, usuários, define hierarquias e c
 
 ---
 
+## Etapa 4: Concessão de Permissões para o Engenheiro de Dados
+
+### O que são Grants no Snowflake?
+
+**Grants** são comandos que concedem permissões específicas para roles ou usuários sobre objetos do banco de dados, como databases, schemas e tabelas. Eles definem o que cada perfil pode fazer, garantindo segurança e governança.
+
+### Como configuramos os Grants para o Engenheiro de Dados?
+
+Para o perfil **ENGENHEIRO_DADOS**, garantimos acesso completo aos ambientes de desenvolvimento, permitindo criar, alterar e deletar dados e objetos nos databases RAW e STG. Isso inclui:
+
+- Permissões totais em todos os databases, schemas e tabelas dos ambientes DEV_RAW e DEV_STG  
+- Grants automáticos para futuros schemas e tabelas nesses ambientes, garantindo que permissões sejam aplicadas automaticamente a novos objetos criados  
+
+Para os ambientes de Homologação (HML) e Produção (PRD), o Engenheiro de Dados possui apenas permissão de leitura, permitindo consultar dados sem risco de alterações não autorizadas.
+
+### Por que essa configuração?
+
+Esse modelo promove segurança e boas práticas, garantindo que alterações e desenvolvimento sejam realizados apenas no ambiente DEV, enquanto homologação e produção ficam protegidos contra modificações acidentais.
+
+---
+
+### Referência ao Script 4
+
+O Script "04 - Data Engineer Grants" configura as permissões detalhadas acima, estabelecendo o controle de acesso para o perfil de Engenheiro de Dados dentro do projeto.
+
+---
 
 
