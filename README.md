@@ -83,6 +83,43 @@ No ambiente DEV, inserimos alguns registros de teste para validar a estrutura da
 
 O Script "02 - Example Tables" contém todos os comandos para criar as tabelas descritas acima e os inserts de teste no ambiente de desenvolvimento.
 
+
+## Etapa 3: Criação de Usuários e Roles
+
+### O que são Roles (Funções) no Snowflake?
+
+Uma **role** é um conjunto de permissões que define o que um usuário pode fazer dentro do ambiente Snowflake. Ela facilita a gestão de acesso, permitindo atribuir e revogar privilégios de forma centralizada e organizada.
+
+### Hierarquia de Roles
+
+Roles podem ser organizadas em hierarquias, onde uma role pode herdar permissões de outras. Isso simplifica o gerenciamento, agrupando funções semelhantes ou relacionadas.
+
+### O que são Usuários no Snowflake?
+
+Um **usuário** representa uma pessoa ou serviço que acessa o Snowflake. Cada usuário possui credenciais, uma role padrão e um warehouse padrão para executar suas tarefas.
+
+### Como usamos Roles e Usuários neste projeto?
+
+Criamos roles para diferentes perfis da equipe:
+
+- **ORG_ROLE**: Role organizacional que agrega outras funções  
+- **ENGENHEIRO_DADOS**: Responsável pela construção e manutenção dos pipelines de dados  
+- **ANALISTA_NEGOCIOS**: Usuário que consome os dados para análises e tomada de decisão  
+- **QA_DADOS**: Responsável por validar a qualidade dos dados  
+
+Criamos usuários de exemplo e atribuímos a eles roles e warehouses padrão para simular diferentes perfis de acesso e garantir o controle seguro dos recursos.
+
+### Concessão de permissões (Grants)
+
+As roles recebem permissões específicas, como o uso de warehouses, garantindo que cada usuário tenha acesso apenas ao que for necessário para sua função.
+
 ---
+
+### Referência ao Script 3
+
+O Script "03 - Users and Roles" cria as roles, usuários, define hierarquias e concede os acessos necessários, estabelecendo o modelo de segurança e governança do ambiente Snowflake.
+
+---
+
 
 
