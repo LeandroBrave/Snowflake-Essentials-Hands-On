@@ -53,4 +53,36 @@ O Script "01 - Basic Structures" contém os comandos que criam essa estrutura co
 
 ---
 
+## Etapa 2: Criação das Tabelas Brutas (Raw Tables)
+
+### O que é uma tabela no Snowflake?
+
+Uma **tabela** é o objeto onde os dados são efetivamente armazenados. É organizada em colunas e linhas, e cada coluna tem um tipo de dado específico, como números, textos ou datas.
+
+### Como usamos as tabelas neste projeto?
+
+Neste passo, criamos as tabelas que irão armazenar os dados brutos recebidos diretamente das APIs, sem transformação ou limpeza, para garantir a integridade dos dados originais.
+
+### Tabelas criadas
+
+- Para a API **OPENMETEO**, foram criadas duas tabelas em ambientes de Desenvolvimento (DEV) e Homologação (HML):
+  - `openmeteo_raw_archive`: Guarda dados históricos ou arquivados da API.
+  - `openmeteo_raw_forecast`: Guarda dados de previsão meteorológica.
+
+### Por que criar tabelas em múltiplos ambientes?
+
+Ter as mesmas tabelas em DEV e HML permite que possamos testar inserções, permissões (grants) e processos de forma segura antes de levar para produção.
+
+### Inserção de dados de exemplo
+
+No ambiente DEV, inserimos alguns registros de teste para validar a estrutura das tabelas e facilitar o desenvolvimento inicial. Esses dados simulam uma resposta típica da API Open-Meteo.
+
+---
+
+### Script 2: Example Tables
+
+O Script "02 - Example Tables" contém todos os comandos para criar as tabelas descritas acima e os inserts de teste no ambiente de desenvolvimento.
+
+---
+
 
