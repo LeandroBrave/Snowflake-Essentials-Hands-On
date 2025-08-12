@@ -115,7 +115,7 @@ As roles recebem permissões específicas, como o uso de warehouses, garantindo 
 
 ---
 
-### Referência ao Script 3
+### Script 03 - Users and Roles
 
 O Script "03 - Users and Roles" cria as roles, usuários, define hierarquias e concede os acessos necessários, estabelecendo o modelo de segurança e governança do ambiente Snowflake.
 
@@ -142,7 +142,7 @@ Esse modelo promove segurança e boas práticas, garantindo que alterações e d
 
 ---
 
-### Referência ao Script 4
+### Script 04 - Data Engineer Grants
 
 O Script "04 - Data Engineer Grants" configura as permissões detalhadas acima, estabelecendo o controle de acesso para o perfil de Engenheiro de Dados dentro do projeto.
 
