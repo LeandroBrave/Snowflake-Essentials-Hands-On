@@ -121,31 +121,67 @@ O Script "03 - Users and Roles" cria as roles, usuários, define hierarquias e c
 
 ---
 
-## Etapa 4: Concessão de Permissões para o Engenheiro de Dados
+## Etapa 4 a 6: Concessão de Permissões e Testes de Acesso
+
+Nesta parte do projeto, configuramos as permissões para os diferentes perfis de usuários e validamos o comportamento esperado na prática.
+
+---
 
 ### O que são Grants no Snowflake?
 
-**Grants** são comandos que concedem permissões específicas para roles ou usuários sobre objetos do banco de dados, como databases, schemas e tabelas. Eles definem o que cada perfil pode fazer, garantindo segurança e governança.
-
-### Como configuramos os Grants para o Engenheiro de Dados?
-
-Para o perfil **ENGENHEIRO_DADOS**, garantimos acesso completo aos ambientes de desenvolvimento, permitindo criar, alterar e deletar dados e objetos nos databases RAW e STG. Isso inclui:
-
-- Permissões totais em todos os databases, schemas e tabelas dos ambientes DEV_RAW e DEV_STG  
-- Grants automáticos para futuros schemas e tabelas nesses ambientes, garantindo que permissões sejam aplicadas automaticamente a novos objetos criados  
-
-Para os ambientes de Homologação (HML) e Produção (PRD), o Engenheiro de Dados possui apenas permissão de leitura, permitindo consultar dados sem risco de alterações não autorizadas.
-
-### Por que essa configuração?
-
-Esse modelo promove segurança e boas práticas, garantindo que alterações e desenvolvimento sejam realizados apenas no ambiente DEV, enquanto homologação e produção ficam protegidos contra modificações acidentais.
+- **Grants** são comandos que concedem permissões específicas a roles ou usuários, sobre databases, schemas ou tabelas.
 
 ---
 
-### Script 04 - Data Engineer Grants
+### Perfil Engenheiro de Dados (`ENGENHEIRO_DADOS`)
 
-O Script "04 - Data Engineer Grants" configura as permissões detalhadas acima, estabelecendo o controle de acesso para o perfil de Engenheiro de Dados dentro do projeto.
+- Recebe **acesso total em DEV** (RAW e STG):
+  - Pode criar, modificar, deletar tabelas e dados.  
+  - Pode consultar e listar todas as tabelas.  
+- Recebe **acesso de leitura em HML e PRD**:
+  - Pode consultar dados (`SELECT`) e listar tabelas (`SHOW TABLES`).  
+  - **Não pode modificar dados ou objetos** (inserts, updates, deletes falharão).
+
+> Nota: a leitura global permite ao engenheiro validar e analisar dados sem risco de alterar ambientes de homologação ou produção.
 
 ---
 
+### Perfil QA (`QA_DADOS`)
 
+- Recebe **acesso de leitura restrito a HML** (RAW e STG):
+  - Pode consultar e listar tabelas.  
+  - Não tem acesso a DEV nem a PRD.  
+- Permissões automáticas (`FUTURE TABLES`) garantem que novas tabelas em HML também sejam visíveis para QA.
+
+---
+
+### Testes práticos de acesso (Script 06)
+
+- Com `ENGENHEIRO_DADOS`:
+  - ✅ `SELECT * FROM DEV_RAW.OPENMETEO.FORECAST_TEST` → funciona (leitura e escrita).  
+  - ✅ `SHOW TABLES IN DEV_RAW.OPENMETEO` → funciona.  
+  - ❌ `DELETE FROM HML_RAW.OPENMETEO.FORECAST_TEST` → **não funciona**, validando a restrição de escrita.  
+  - ✅ `SELECT * FROM HML_RAW.OPENMETEO.FORECAST_TEST` → funciona (somente leitura).  
+
+- Com `QA_DADOS`:
+  - ✅ `SELECT * FROM HML_RAW.OPENMETEO.FORECAST_TEST` → funciona.  
+  - ✅ `SHOW TABLES IN HML_RAW.OPENMETEO` → funciona.  
+  - ❌ `SELECT * FROM DEV_RAW.OPENMETEO.FORECAST_TEST` → não funciona.  
+  - ❌ `SHOW TABLES IN DEV_RAW.OPENMETEO` → não funciona.  
+
+Esses testes garantem que a política de **“leitura global / escrita restrita”** seja aplicada corretamente.
+
+---
+
+### Por que não cobrimos PRD?
+
+Para não estender demais a demonstração com mais do mesmo, **não configuramos tabelas nem testes em PRD**.  
+O foco desta etapa é mostrar como criar roles, atribuir grants e validar acessos sem arriscar alterações em um ambiente de produção.
+
+---
+
+### Referência aos Scripts
+
+- **Script 04 – Data Engineer Grants**: define permissões de leitura/escrita para o Engenheiro de Dados.  
+- **Script 05 – QA Grants**: define permissões de leitura para QA.  
+- **Script 06 – Testing Grants and Roles**: valida na prática o comportamento das permissões configuradas.
