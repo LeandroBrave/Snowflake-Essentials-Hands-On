@@ -223,3 +223,91 @@ Esses experimentos evidenciam como o Snowflake facilita análises históricas e 
 ### Referência aos Scripts
 
 - **Script – 07 - Time Travel - AT e BEFORE**: Exemplo de querys usando o At e o Before, recursos do time travel do snowflake
+
+## Etapa 8: Time Travel – Backup e Recuperação
+
+Além de permitir consultas históricas, o **Time Travel** também fornece mecanismos poderosos de **recuperação de objetos e dados** no Snowflake.  
+Isso elimina a necessidade de restaurar backups manuais, já que o próprio banco preserva versões passadas de objetos e seus conteúdos dentro do período de retenção configurado.
+
+---
+
+### Funcionalidades demonstradas
+
+Nesta etapa, exploramos duas situações comuns:
+
+1. **Restauração de objetos (UNDROP)**  
+   - O Snowflake permite "desfazer" a exclusão de objetos como tabelas, schemas e até databases.  
+   - Isso é feito com o comando `UNDROP`, que devolve o objeto ao estado em que estava no momento do drop.  
+   - Dessa forma, mesmo exclusões acidentais podem ser revertidas de forma simples.
+
+2. **Recuperação de dados deletados (AT)**  
+   - Após apagar todos os registros de uma tabela, é possível recuperar os dados consultando uma versão passada, utilizando a cláusula `AT`.  
+   - Nesse caso, usamos o timestamp de referência obtido no experimento anterior (Etapa 7) para restaurar as linhas ao estado original.  
+   - A estratégia aplicada foi realizar um **insert baseado na consulta histórica**, trazendo os dados de volta para a tabela.
+
+---
+
+### Benefícios práticos
+
+- **Segurança operacional**: elimina o risco de perda permanente de dados ou objetos por exclusão acidental.  
+- **Simplicidade**: não é necessário recorrer a backups externos ou processos manuais de restauração.  
+- **Integração com auditoria**: permite não apenas recuperar, mas também verificar exatamente em que momento ocorreu a alteração indesejada.  
+
+Com esses recursos, o Snowflake oferece uma camada adicional de **resiliência** e **tranquilidade** no gerenciamento de dados.
+
+### Referência aos Scripts
+
+- **Script – 08 - Time Travel - Backup**: Exploração de funcionalidades de backup
+
+## Etapa 09 - Clone
+
+O comando **Clone** no Snowflake permite criar uma cópia de uma tabela, esquema ou banco de dados sem consumir espaço adicional de armazenamento.  
+Isso é possível porque o Snowflake utiliza metadados e **time travel** para referenciar os mesmos dados já existentes.  
+
+Esse recurso é muito útil em situações como:  
+- **Testes e simulações**: criar um ambiente seguro para validar alterações.  
+- **Validações**: verificar dados históricos sem risco de corromper a tabela original.  
+- **Economia de armazenamento**: a cópia não duplica fisicamente os dados, apenas cria referências.  
+
+O clone se comporta como uma tabela comum, podendo receber inserções, atualizações ou exclusões sem impactar a tabela original.  
+
+### Referência aos Scripts
+
+- **Script – 09 - Time Travel - Clone**: Clones sem gasto de storage
+
+## 10 - Streams
+
+No Snowflake, um **Stream** é um objeto que captura alterações feitas em uma tabela, permitindo rastrear **inserts, updates e deletes** desde a última vez que o stream foi consultado.  
+Ele funciona como um “log incremental” que facilita processos de **ETL/ELT** ou qualquer operação que precise consumir apenas as mudanças ocorridas nos dados.
+
+---
+
+### Conceitos principais
+
+- **SHOW_INITIAL_ROWS**: quando ativado, o stream considera também as linhas já existentes na tabela no momento da criação.  
+- **APPEND_ONLY**: define se o stream deve rastrear apenas inserções ou também atualizações e deleções.  
+
+Com isso, é possível consumir alterações de forma controlada, evitando **reprocessamento de dados antigos** e garantindo eficiência em pipelines.
+
+---
+
+### Funcionalidades demonstradas
+
+1. **Criação do stream**: o stream é vinculado a uma tabela específica, monitorando todas as mudanças de acordo com as configurações definidas.  
+2. **Consulta ao stream**: antes de consumir, é possível visualizar todas as alterações capturadas.  
+3. **Consumo do stream**: os dados do stream podem ser inseridos em uma nova tabela ou processados em ETLs, garantindo que cada alteração seja capturada apenas uma vez.  
+4. **Rastreamento de alterações**: após updates ou deletes na tabela original, o stream identifica **o tipo de ação realizada** e mantém um histórico incremental das mudanças.
+
+---
+
+### Benefícios práticos
+
+- **ETL incremental simplificado**: só processa linhas que mudaram, economizando tempo e recursos.  
+- **Rastreabilidade completa**: cada alteração (inserção, atualização ou exclusão) é registrada e pode ser auditada.  
+- **Segurança e consistência**: permite validar alterações antes de impactar tabelas de destino, garantindo integridade do pipeline.
+
+---
+
+### Referência aos Scripts
+
+- **Script – 10 - Streams**: Criação e consumo de streams para rastrear alterações na tabela `openmeteo_raw_archive`.
