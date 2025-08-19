@@ -185,3 +185,41 @@ O foco desta etapa é mostrar como criar roles, atribuir grants e validar acesso
 - **Script 04 – Data Engineer Grants**: define permissões de leitura/escrita para o Engenheiro de Dados.  
 - **Script 05 – QA Grants**: define permissões de leitura para QA.  
 - **Script 06 – Testing Grants and Roles**: valida na prática o comportamento das permissões configuradas.
+
+## Etapa 7: Time Travel – Consultas "AT" e "BEFORE"
+
+O **Time Travel** é um recurso nativo do Snowflake que permite acessar versões anteriores de tabelas, schemas e databases.  
+Ele possibilita consultar dados como estavam em um momento específico no passado, desfazer alterações acidentais ou auditar históricos.  
+
+### Vantagens principais do Time Travel
+- **Recuperação de dados** deletados ou modificados acidentalmente.  
+- **Auditoria e rastreabilidade** de alterações em tabelas.  
+- **Análises históricas**, com suporte a comparações temporais.  
+
+---
+
+### Configuração do Time Travel
+Cada objeto no Snowflake (tabelas, schemas ou databases) pode ter um **período de retenção diferente**, definido em dias.  
+Neste experimento:  
+- A tabela `openmeteo_raw_archive` no ambiente **DEV_RAW** foi configurada para manter 5 dias de histórico.  
+- O schema `dev_raw.openmeteo` foi configurado para manter 7 dias.  
+- O database `dev_raw` foi configurado para manter 10 dias.  
+
+Isso permite granularidade: bancos mais críticos podem ter retenções maiores, enquanto tabelas temporárias podem ter retenções menores.
+
+---
+
+### Experimentos com Time Travel
+
+Os testes realizados neste script incluem:  
+
+1. **Registrar o momento atual** para servir como referência temporal.  
+2. **Consultar a quantidade de linhas** na tabela em diferentes momentos, comparando o estado atual com o estado anterior.  
+3. **Inserir novos registros** e verificar como o Time Travel permite visualizar tanto a versão atualizada da tabela quanto a versão anterior (antes do insert).  
+4. **Consultar a tabela retroativamente**, seja com um *timestamp exato* (`AT`) ou com um deslocamento relativo no tempo (`BEFORE`, como "10 minutos atrás").  
+
+Esses experimentos evidenciam como o Snowflake facilita análises históricas e a recuperação de informações sem a necessidade de restaurar backups ou criar cópias adicionais de dados.
+
+### Referência aos Scripts
+
+- **Script 047 – 07 - Time Travel - AT e BEFORE**: Exemplo de querys usando o At e o Before, recursos do time travel do snowflake
