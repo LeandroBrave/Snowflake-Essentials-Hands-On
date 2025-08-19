@@ -222,4 +222,4 @@ Esses experimentos evidenciam como o Snowflake facilita análises históricas e 
 
 ### Referência aos Scripts
 
-- **Script 047 – 07 - Time Travel - AT e BEFORE**: Exemplo de querys usando o At e o Before, recursos do time travel do snowflake
+- **Script – 07 - Time Travel - AT e BEFORE**: Exemplo de querys usando o At e o Before, recursos do time travel do snowflake
