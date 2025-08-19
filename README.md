@@ -7,7 +7,7 @@ Aqui criaremos tabelas para receber dados de APIs públicas. A api OPEN-METEO, d
 
 ### O que é um Database?
 
-No Snowflake, um **database** é como um owner presente nos bancos mais populares, ou seja, um container lógico que organiza seus dados em grupos. Ele serve para agrupar schemas e tabelas relacionados, facilitando a administração e a segurança dos dados.
+No Snowflake, um **database** é como um owner presente nos bancos mais populares, ou seja, um container lógico que organiza seus dados em grupos. Ele serve para agrupar schemas e tabelas relacionadas, facilitando a administração e a segurança dos dados.
 
 ### Como usamos os Databases neste projeto?
 
