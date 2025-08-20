@@ -10,7 +10,8 @@ SELECT * FROM openmeteo_archive_stream;
 --vamos consumir nosso stream:
 CREATE OR REPLACE table tabela_teste_stream as SELECT * FROM openmeteo_archive_stream;
 
---agora o confere no stream de novo:
+--agora o confere no stream de novo.
+--ele estará vazio por ter sido consumido
 SELECT * FROM openmeteo_archive_stream;
 
 --vamos mexer nos dados:
