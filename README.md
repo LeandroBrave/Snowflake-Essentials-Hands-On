@@ -311,3 +311,70 @@ Com isso, é possível consumir alterações de forma controlada, evitando **rep
 ### Referência aos Scripts
 
 - **Script – 10 - Streams**: Criação e consumo de streams para rastrear alterações na tabela `openmeteo_raw_archive`.
+
+## 11 - External Stages
+
+No Snowflake, um **External Stage** funciona como um ponteiro para um **armazenamento externo** (como S3, Azure Blob ou GCP), permitindo que o Snowflake **leia e escreva arquivos diretamente** sem precisar mover dados manualmente para dentro do banco.  
+
+Isso é muito útil para pipelines de ingestão, exportação de dados e integração com ferramentas de ETL ou analytics.
+
+---
+
+### Componentes do External Stage
+
+1. **Storage Integration**  
+   - Configuração que permite ao Snowflake acessar o storage externo de forma segura.  
+   - No caso da AWS (nosso exemplo), utiliza **roles do IAM**, evitando expor credenciais sensíveis diretamente.  
+
+2. **Stage**  
+   - Representa uma referencia dentro do Snowflake a algum repositorio de dados.  
+   - Pode ser **interno** (dentro do Snowflake) ou **externo** (S3, Azure, GCP).  
+
+3. **File Format**  
+   - Define o formato dos arquivos que serão lidos ou escritos no stage, como `PARQUET`, `CSV` ou `JSON`.  
+   - Pode incluir compressão, opções de parsing e conversão de tipos de dados.  
+
+4. **Bucket / Container**  
+   - Local físico no provedor de cloud (ex: bucket S3) onde os arquivos estão armazenados.  
+
+---
+
+### Setup necessário na AWS (S3)
+
+Para que o stage funcione corretamente, alguns passos são necessários:
+
+- **Criar bucket S3**  
+  - Definir a região adequada para reduzir latência.  
+  - Configurar versionamento ou lifecycle se desejado.  
+
+- **Criar Role IAM**
+  - Criaremos um usuário e uma role que representarão o snowflake 
+  - Permissões mínimas: `s3:GetObject`, `s3:PutObject`, `s3:ListBucket` no bucket escolhido.  
+  - Configurar trust relationship na role do snowflake permitindo que o Snowflake assuma essa role.
+  <img width="1889" height="752" alt="image" src="https://github.com/user-attachments/assets/0afb4bd6-64d3-4b8d-ace3-b24f67513991" />
+
+
+- **Criar Storage Integration no Snowflake**  
+  - Conecta o Snowflake à role IAM e ao bucket de forma segura.  
+
+- **Criar File Format reutilizável**  
+  - Para padronizar leitura e escrita de arquivos em pipelines.  
+
+- **Criar Stage apontando para o bucket**  
+  - Associar a Storage Integration e o File Format criados.  
+
+- **Grants**  
+  - Conceder permissões de uso do database, schemas, file formats e stages para os papéis correspondentes (ex.: engenheiros, admins).  
+
+---
+
+### Benefícios práticos
+
+- **Integração simplificada com cloud storage**: evita movimentação manual de arquivos.  
+- **Segurança**: acesso controlado via roles do IAM e Storage Integration.  
+- **Reuso**: file formats e stages podem ser reutilizados em múltiplos pipelines e projetos.  
+
+### Referência aos Scripts
+
+- **Script – 11 - External Stages**: Criação e configuração de storage integration, file formats e stage externo para S3.
+
