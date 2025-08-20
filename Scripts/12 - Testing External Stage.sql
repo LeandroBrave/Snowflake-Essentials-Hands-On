@@ -1,6 +1,7 @@
+--listar os arquivos na stage
 LIST @METADATA_DB.STAGES.meu_stage_s3;
 
---mostrar o $1
+--é possível fazer querys nos arquivos do s3 usando a stage
 SELECT * 
 FROM @METADATA_DB.STAGES.meu_stage_s3/
 (FILE_FORMAT => 'METADATA_DB.FILE_FORMATS.PARQUET_FORMAT');
@@ -22,10 +23,12 @@ $1:cloudcover::STRING AS cloudcover
 FROM @METADATA_DB.STAGES.meu_stage_s3/
 (FILE_FORMAT => 'METADATA_DB.FILE_FORMATS.PARQUET_FORMAT');
 
+--Agora, um experimento:
+
 --verificando tabela 
  select * from dev_raw.openmeteo.openmeteo_raw_archive 
 
---copy into
+--copy into permite que os dados do s3 sejam inseridos em uma tabela de estrutura identica
 COPY INTO dev_raw.openmeteo.openmeteo_raw_archive
 FROM (
   SELECT
@@ -45,5 +48,5 @@ FROM (
   (FILE_FORMAT => 'METADATA_DB.FILE_FORMATS.PARQUET_FORMAT')
 );
 
-
+--segunda conferencia
  select * from dev_raw.openmeteo.openmeteo_raw_archive 
