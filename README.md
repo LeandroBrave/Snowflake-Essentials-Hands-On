@@ -378,3 +378,38 @@ Para que o stage funcione corretamente, alguns passos são necessários:
 
 - **Script – 11 - External Stages**: Criação e configuração de storage integration, file formats e stage externo para S3.
 
+## 12 - Testing External Stage
+
+Após criar o stage externo e a storage integration, é importante validar seu funcionamento realizando testes práticos de leitura e ingestão de arquivos.
+
+---
+
+### Funcionalidades exploradas
+
+1. **Listagem de arquivos no stage**  
+   - Podemos verificar quais arquivos estão disponíveis diretamente no bucket através do stage criado no Snowflake.  
+   - Isso permite garantir que os dados que queremos consumir realmente estão acessíveis.  
+
+2. **Consulta direta nos arquivos externos**  
+   - O Snowflake permite executar queries diretamente sobre arquivos em S3, sem precisar copiá-los para uma tabela interna.  
+   - Podemos ler colunas específicas, aplicar tipos de dados e até obter metadados como o nome do arquivo.  
+   - Isso é útil para inspeção rápida de arquivos e validação do conteúdo antes de carregar para tabelas internas.  
+
+3. **Ingestão de dados com COPY INTO**  
+   - Após validar o conteúdo dos arquivos, podemos inserir os dados em uma tabela do Snowflake com o comando `COPY INTO`.  
+   - O processo converte os dados do formato Parquet para os tipos de dados corretos da tabela, garantindo integridade.  
+   - É possível repetir essa operação diversas vezes para simulações de ingestão ou atualização incremental.  
+
+---
+
+### Benefícios práticos
+
+- **Validação segura de dados externos** antes de ingestão.  
+- **Flexibilidade de leitura**: consultar arquivos diretamente sem copiar.  
+- **Automação de ingestão**: uso de COPY INTO permite pipelines consistentes e repetíveis.  
+- **Integração com formatos modernos** como Parquet, preservando compressão e performance.  
+
+### Referência aos Scripts
+
+- **Script – 12 - Testing External Stage**: Testes de listagem, leitura e ingestão de arquivos Parquet de um stage externo S3.
+
