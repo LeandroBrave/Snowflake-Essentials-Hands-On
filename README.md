@@ -413,3 +413,67 @@ Após criar o stage externo e a storage integration, é importante validar seu f
 
 - **Script – 12 - Testing External Stage**: Testes de listagem, leitura e ingestão de arquivos Parquet de um stage externo S3.
 
+
+## 13 - Snowpipe – Ingestão Contínua de Dados
+
+O **Snowpipe** é o serviço de ingestão contínua do Snowflake.  
+Com ele, arquivos adicionados a um bucket externo (como o S3) podem ser **automaticamente carregados** em tabelas, sem a necessidade de processos manuais ou jobs externos recorrentes.  
+
+---
+
+### Como funciona
+
+1. **Pipe**  
+   - Objeto no Snowflake que define a instrução `COPY INTO` que será usada sempre que novos arquivos chegarem ao bucket.  
+   - Pode ser configurado com `AUTO_INGEST = TRUE`, permitindo integração direta com notificações do S3.  
+
+2. **Notificações via SQS**  
+   - Quando ativado, o Snowflake gera uma **fila SQS (Simple Queue Service)** associada ao pipe.  
+   - Essa fila recebe notificações sempre que novos arquivos chegam ao bucket, disparando a ingestão automática.
+   - Isso é feito automaticamente e não precisamos nos preocupar com isso.
+
+3. **Monitoramento e controle**  
+   - Pipes podem ser pausados, retomados ou forçados a recarregar arquivos manualmente.  
+   - Comandos como `SHOW PIPES` permitem verificar o status e obter a ARN da fila SQS necessária para o setup na AWS.  
+
+---
+
+### Passos de configuração no Snowflake
+
+- Criar o **pipe** associado ao stage e à tabela de destino.  
+- Ativar `AUTO_INGEST` para habilitar a integração com notificações do S3.  
+- Conferir a **ARN da fila SQS** que o Snowflake fornece (via `SHOW PIPES`).  
+- Usar comandos administrativos para **pausar**, **reativar** ou **refresh** do pipe, dependendo da necessidade operacional.  
+
+---
+
+### Passos de configuração na AWS
+
+Para que o Snowpipe funcione corretamente, é necessário configurar permissões na AWS:
+
+1. **Habilitar notificações no bucket S3**  
+   - Configurar o bucket para enviar eventos de criação de objetos (`s3:ObjectCreated:*`).  
+   - Direcionar esses eventos para a fila SQS fornecida pelo Snowflake.  
+
+2. **Permitir acesso do Snowflake à fila SQS**  
+   - Editar a **política de acesso da fila SQS** para conceder ao Snowflake permissão de leitura.  
+   - O ARN da role Snowflake usada na `STORAGE INTEGRATION` deve estar incluído.  
+
+3. **Garantir alinhamento de regiões**  
+   - O bucket S3, a fila SQS e a conta Snowflake devem estar configurados na mesma região da AWS.  
+
+---
+
+### Benefícios práticos
+
+- **Automação completa da ingestão**: elimina a necessidade de jobs externos ou agendamentos.  
+- **Baixa latência**: novos arquivos são processados quase em tempo real.  
+- **Escalabilidade**: o Snowpipe distribui automaticamente a ingestão, sem necessidade de gerenciar infraestrutura.  
+- **Controle operacional**: pipes podem ser pausados, reativados e monitorados conforme a demanda.  
+
+---
+
+### Referência aos Scripts
+
+- **Script – 13 - Snowpipe**: Configuração de ingestão contínua de arquivos via integração Snowflake + AWS S3 + SQS.
+
