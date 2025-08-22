@@ -430,7 +430,7 @@ Com ele, arquivos adicionados a um bucket externo (como o S3) podem ser **automa
 2. **Notificações via SQS**  
    - Quando ativado, o Snowflake gera uma **fila SQS (Simple Queue Service)** associada ao pipe.  
    - Essa fila recebe notificações sempre que novos arquivos chegam ao bucket, disparando a ingestão automática.
-   - Isso é feito automaticamente e não precisamos nos preocupar com isso.
+   - Isso é feito via configuração direto no bucket.
 
 3. **Monitoramento e controle**  
    - Pipes podem ser pausados, retomados ou forçados a recarregar arquivos manualmente.  
@@ -442,7 +442,7 @@ Com ele, arquivos adicionados a um bucket externo (como o S3) podem ser **automa
 
 - Criar o **pipe** associado ao stage e à tabela de destino.  
 - Ativar `AUTO_INGEST` para habilitar a integração com notificações do S3.  
-- Conferir a **ARN da fila SQS** que o Snowflake fornece (via `SHOW PIPES`).  
+- Conferir a **ARN da fila SQS** que o Snowflake fornece (via `SHOW PIPES` pelo campo notification_channel).  
 - Usar comandos administrativos para **pausar**, **reativar** ou **refresh** do pipe, dependendo da necessidade operacional.  
 
 ---
@@ -460,8 +460,24 @@ Para que o Snowpipe funcione corretamente, é necessário configurar permissões
    - O ARN da role Snowflake usada na `STORAGE INTEGRATION` deve estar incluído.  
 
 3. **Garantir alinhamento de regiões**  
-   - O bucket S3, a fila SQS e a conta Snowflake devem estar configurados na mesma região da AWS.  
+   - O bucket S3, a fila SQS e a conta Snowflake devem estar configurados na mesma região da AWS.
 
+  Na página do bucket, acesse a aba "properties"
+  <img width="1465" height="244" alt="image" src="https://github.com/user-attachments/assets/eca5875f-6b5e-4452-9725-905617ba9f65" />
+
+  Role para baixo ate o event notifications. Clique no botão Create Event Notification
+  <img width="1545" height="206" alt="image" src="https://github.com/user-attachments/assets/bb362105-e1fb-4f61-8bc0-7deb9e6b494e" />
+
+  Escolha um nome e informe o mesmo path definido na sua storage integration
+  <img width="571" height="413" alt="image" src="https://github.com/user-attachments/assets/0a11127b-ca5f-4a2d-833a-fbb0e2d1de68" />
+
+  Escolha os tipos de objetos visados pelo seu pipe (para testes, recomendo selecionar "All object create events"
+  Em "Destination", escolha "SQS Queue" e depois "Enter SQS Queue ARN", informando o ARN recuperado pelo comando SHOW PIPES descrito acima com o campo notification_channel
+  <img width="1060" height="616" alt="image" src="https://github.com/user-attachments/assets/b4dcafb1-3457-4eaf-9c31-6de6fa92af26" />
+
+  Pronto, você agora pode colocar um arquivo no bucket e esperar para ver os dados já integrados na sua tabela
+
+  IMPORTANTE! Após colocar o arquivo, espere até 10 minutos para que o pipe execute a integração. É possível diminuir este tempo, mas vamos nos ater à uma demonstração mais simples.
 ---
 
 ### Benefícios práticos
